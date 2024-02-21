@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <script src="./index.js"></script>
+        <script>
+            const disable = window.FIGHT_DOM_CLOBBERING({
+                allowlist: ['aaa'],
+                reportOnly: false,
+                // reportTo: 'https://csp-report-server/csp-report/',
+            });
+            // disable();
+        </script>
+    </head>
+    <body style="max-width: 80%">
+        <h1>DOM Clobbering Protection JavaScript Shim PoC (<a href="https://x.com/WeizmanGal/status/1755328250304209071?s=20">ctx</a>)</h1>
+        <div id="aaa">
+            <h2> This is <code>DIV#aaa</code> </h2>
+            <h4>Since it's in the allowlist, it is allowed to be clobbered</h4>
+            <p>This means attempting to access it will return <code>DIV#aaa</code> DOM node</p>
+        </div>
+        <hr>
+        <div id="bbb">
+            <h2> This is <code>DIV#bbb</code> </h2>
+            <h4>Since it's NOT in the allowlist, it is NOT allowed to be clobbered</h4>
+            <p>This means attempting to access it will throw an Error</p>
+        </div>
+        <hr>
+        <div>
+            <ul>
+                <li>
+                    Open the console and try setting the "id" attribute of any DOM node to any value,
+                    and then try accessing it via <code>window[YOUR_VALUE]</code> - this will throw an Error as well.
+                </li>
+                <li>
+                    This shim can easily be manifested as a new CSP directive, for example:
+                    <ul>
+                        <li>
+                            <code>Content-Security-Header: "dom-clobbering: 'aaa'"</code>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>
