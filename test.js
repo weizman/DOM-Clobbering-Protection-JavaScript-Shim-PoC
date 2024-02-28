@@ -78,7 +78,7 @@ window.TEST_FIGHT_DOM_CLOBBERING = (function(){
 
             async function(div) {
                 const test = 'name attr after ignored';
-                const child = div.appendChild(document.createElement('span'));
+                const child = div.appendChild(document.createElement('iframe'));
                 child.setAttribute('name', test);
                 await new Promise(r => setTimeout(r, 0));
                 try {window[test]} catch (err) {
@@ -89,14 +89,14 @@ window.TEST_FIGHT_DOM_CLOBBERING = (function(){
 
             async function(div) {
                 const test = 'name attr before ignored';
-                const child = document.createElement('span');
+                const child = document.createElement('iframe');
                 child.setAttribute('name', test);
                 div.appendChild(child);
                 await new Promise(r => setTimeout(r, 0));
                 try {window[test]} catch (err) {
-                    return [false, test];
+                    return [true, test];
                 }
-                return [true, test];
+                return [false, test];
             },
 
             async function(div) {

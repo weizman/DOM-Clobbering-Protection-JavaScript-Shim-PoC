@@ -8,12 +8,26 @@
                     reportOnly: false,
                     // reportTo: 'https://csp-report-server/csp-report/',
                 });
-                // disable();
+                location.href.includes('disable') && disable();
             }
         </script>
     </head>
     <body style="max-width: 90vh">
-        <h1>DOM Clobbering Protection JavaScript Shim PoC (<a href="https://x.com/WeizmanGal/status/1760394696977789272?s=20">ctx</a>)</h1>
+        <h1>DOM Clobbering Protection JavaScript Shim PoC</h1>
+        <blockquote>
+            <i>
+                ~ <a href="https://x.com/WeizmanGal/status/1760394696977789272?s=20">Context</a>
+                -
+                By <a href="//weizmangal.com">Gal Weizman</a> (
+                <script>
+                    document.currentScript.parentElement.innerHTML += location.href.includes('disable') ?
+                        `<i>Demo is <a href="?">disabled</a></i>` :
+                        `<i>Demo is <a href="?disabled">enabled</a></i>`;
+
+                </script>
+                )
+            </i>
+        </blockquote>
         <div id="aaa">
             <h2> This is <code>DIV#aaa</code> </h2>
             <h4>Since it's in the allowlist, it is allowed to be clobbered</h4>
@@ -56,18 +70,18 @@
         <hr>
         <div>
             <b>Try it yourself: </b>
-            <input id="input" placeholder="prop123" contenteditable="true"/>
+            <input id="input" placeholder="id or name you pick" contenteditable="true"/>
             <i>(access is <b style="color:green" id="status">allowed</b>)</i>
             <button id="button" onclick="demo()">Run (<code>⌘ + ↵</code> / <code>^ + ↵</code>)</button>
             <br><br>
             <div style="cursor: pointer">
                 <details>
                     <summary>view parsed html</summary>
-                    <div style="border: 1px solid; display: contents; width: 15vh; height: 180px" id="dump"></div>
+                    <div style="border: 1px solid; display: contents; width: 15vh; height: 130px" id="dump"></div>
                 </details>
                 <br>
                 <div style="float:left; padding-right: 10px">
-                    <textarea id="textarea" placeholder="<div id='prop123'>" style="width: 60vh; height: 180px"></textarea>
+                    <textarea id="textarea" placeholder="<div id='id or name you pick'>" style="width: 60vh; height: 130px"></textarea>
                 </div>
             </div>
             <script>
