@@ -70,11 +70,9 @@ window.FIGHT_DOM_CLOBBERING = (function(){
                 mutations.forEach(mutation => {
                     switch (mutation.type) {
                         case 'childList':
-                            if (document.readyState === 'loading') {
-                                mutation.addedNodes.forEach(node => {
-                                    address(node);
-                                });
-                            }
+                            mutation.addedNodes.forEach(node => {
+                                address(node);
+                            });
                             break;
                         case 'attributes':
                             address(mutation.target);
