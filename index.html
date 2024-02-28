@@ -56,42 +56,45 @@
         <hr>
         <div>
             <b>Try it yourself: </b>
-            <input id="input" placeholder="id:prop123" contenteditable="true"/>
-            <i>(<a href="javascript:demo()">access</a> <b style="color:green" id="status">allowed</b>)</i>
+            <input id="input" placeholder="prop123" contenteditable="true"/>
+            <i>(access is <b style="color:green" id="status">allowed</b>)</i>
+            <button id="button" onclick="demo()">Run (<code>⌘ + ↵</code> / <code>^ + ↵</code>)</button>
             <br><br>
-            <textarea id="textarea" placeholder="<div id='prop123'>" style="width: 80%; height: 200px"></textarea>
-            <div style="width: 20%; height: 200px; float:left;" id="dump"></div>
+            <div style="cursor: pointer">
+                <details>
+                    <summary>view parsed html</summary>
+                    <div style="border: 1px solid; display: contents; width: 15vh; height: 180px" id="dump"></div>
+                </details>
+                <br>
+                <div style="float:left; padding-right: 10px">
+                    <textarea id="textarea" placeholder="<div id='prop123'>" style="width: 60vh; height: 180px"></textarea>
+                </div>
+            </div>
             <script>
                 {
+                    window.addEventListener('keydown', (event) => {
+                        if ((event.ctrlKey || event.metaKey) && event.code === 'Enter') {
+                            button.click();
+                        }
+                    });
                     const dump = document.getElementById('dump');
+                    const button = document.getElementById('button');
                     const status = document.getElementById('status');
                     const input = document.getElementById('input');
                     const textarea = document.getElementById('textarea');
                     const demo = JSON.parse(localStorage.demo || '{}');
-                    const {html, attribute} = demo;
-                    attribute && (input.value = attribute);
+                    const {html, value} = demo;
+                    value && (input.value = value);
                     html && (textarea.value = html);
                     window.demo = () => {
                         dump.innerHTML = '';
-                        const p = document.createElement('p');
-                        const attribute = input.value;
-                        const [name, value] = attribute.split(':');
+                        const value = input.value;
                         const html = textarea.value;
-                        if (html || attribute) {
-                            if (name !== 'name' && name !== 'id') {
-                                return alert('attribute must be "id" or "name" (expected input: "id:xxx" or "name:xxx")');
-                            }
-                            if (!html) {
-                                return alert('html cannot be left empty');
-                            }
-                        }
-                        localStorage.demo = JSON.stringify({html, attribute});
-                        p.setAttribute(name, value);
-                        dump.appendChild(p);
+                        localStorage.demo = JSON.stringify({html, value});
                         setTimeout(() => {
                             dump.innerHTML += html;
                             setTimeout(() => {
-                                try {window[value]} catch {
+                                try {window[value]} catch (err) {
                                     status.style.color = 'red';
                                     status.innerText = 'blocked';
                                     return;
