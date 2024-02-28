@@ -1,7 +1,6 @@
 window.FIGHT_DOM_CLOBBERING = (function(){
-    return main.bind(null, document.documentElement);
-
-    function main(node, config) {
+    const node = document.documentElement;
+    return function main(config) {
         let {
             enabled,
             allowlist,
@@ -13,19 +12,12 @@ window.FIGHT_DOM_CLOBBERING = (function(){
             throw new Error(`when reportOnly is turned on, reportTo must be provided. until fixed, dom clobbering protection is off`);
         }
 
+        const blocked = [];
+
         return observe(node);
 
-        function hook(node) {
-            const {name, value} = node;
-            if (name !== 'id') {
-                return;
-            }
-            if (!(window[value] instanceof HTMLElement)) {
-                return;
-            }
-            if (allowlist?.includes(value)) {
-                return;
-            }
+        function block(value) {
+            blocked.push(value);
             Object.defineProperty(window, value, {get: function() {
                     if (enabled) {
                         const msg = `window["${value}"] access attempt was intercepted:`;
@@ -50,6 +42,25 @@ window.FIGHT_DOM_CLOBBERING = (function(){
                     }
                 }
             });
+        }
+
+        function hook(node) {
+            const {name, value} = node;
+            if (allowlist?.includes(value) || blocked.includes(value)) {
+                return;
+            }
+            switch (name) {
+                case 'id':
+                    if (window[value] instanceof HTMLElement) {
+                        block(value);
+                    }
+                    break;
+                case 'name':
+                    if (window[value] && window[value] === window[value]?.window) {
+                        block(value);
+                    }
+                    break;
+            }
         }
 
         function address(node) {

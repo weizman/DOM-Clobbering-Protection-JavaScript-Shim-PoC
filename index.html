@@ -2,12 +2,14 @@
     <head>
         <script src="./index.js"></script>
         <script>
-            const disable = window.FIGHT_DOM_CLOBBERING({
-                allowlist: ['aaa'],
-                reportOnly: false,
-                // reportTo: 'https://csp-report-server/csp-report/',
-            });
-            // disable();
+            {
+                const disable = window.FIGHT_DOM_CLOBBERING({
+                    allowlist: ['aaa'],
+                    reportOnly: false,
+                    // reportTo: 'https://csp-report-server/csp-report/',
+                });
+                // disable();
+            }
         </script>
     </head>
     <body style="max-width: 80%">
@@ -39,6 +41,17 @@
                     </ul>
                 </li>
             </ul>
+        </div>
+        <hr>
+        <div id="container">
+            <script src="./test.js"></script>
+            <script>
+                {
+                    const container = document.getElementById('container');
+                    container.innerHTML = '';
+                    window.TEST_FIGHT_DOM_CLOBBERING(container);
+                }
+            </script>
         </div>
     </body>
 </html>
