@@ -56,7 +56,7 @@ window.FIGHT_DOM_CLOBBERING = (function(){
                     }
                     break;
                 case 'name':
-                    if (window[value] && window[value] === window[value]?.window) {
+                    if (window[value] instanceof HTMLElement || window[value] && window[value] === window[value]?.window) {
                         block(value);
                     }
                     break;
