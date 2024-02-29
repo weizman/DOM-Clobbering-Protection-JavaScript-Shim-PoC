@@ -133,6 +133,36 @@ window.TEST_FIGHT_DOM_CLOBBERING = (function(){
                 }
                 return [false, test];
             },
+
+            async function(div) {
+                const test = 'html collection name & id (div , img)';
+                const child = document.createElement('div');
+                const child2 = document.createElement('img');
+                child.setAttribute('id', test);
+                child2.setAttribute('name', test);
+                div.appendChild(child);
+                div.appendChild(child2);
+                await new Promise(r => setTimeout(r, 0));
+                try {window[test]} catch (err) {
+                    return [true, test];
+                }
+                return [false, test];
+            },
+
+            async function(div) {
+                const test = 'inner child (div > img)';
+                const child = document.createElement('div');
+                const child2 = document.createElement('img');
+                child.setAttribute('id', 'RANDOM_123');
+                child2.setAttribute('name', test);
+                child.appendChild(child2);
+                div.appendChild(child);
+                await new Promise(r => setTimeout(r, 0));
+                try {window[test]} catch (err) {
+                    return [true, test];
+                }
+                return [false, test];
+            },
         ];
 
         setup();

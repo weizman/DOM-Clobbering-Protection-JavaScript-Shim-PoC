@@ -49,24 +49,28 @@ window.FIGHT_DOM_CLOBBERING = (function(){
             if (allowlist?.includes(value) || blocked.includes(value)) {
                 return;
             }
-            switch (name) {
-                case 'id':
-                    if (window[value] instanceof HTMLElement) {
-                        block(value);
-                    }
-                    break;
-                case 'name':
-                    if (window[value] instanceof HTMLElement || window[value] && window[value] === window[value]?.window) {
-                        block(value);
-                    }
-                    break;
+            if (name !== 'id' && name !== 'name') {
+                return;
+            }
+            if (!window[value]) {
+                return;
+            }
+            if (window[value] instanceof HTMLElement) {
+                return block(value);
+            }
+            if (window[value] instanceof HTMLCollection) {
+                return block(value);
+            }
+            if (window[value] === window[value]?.window && name === 'name') {
+                return block(value);
             }
         }
 
         function address(node) {
             switch (node.nodeType) {
                 case Node.ELEMENT_NODE:
-                    Array.from(node.attributes).forEach(address);
+                    const nodes = Array.from(node.querySelectorAll('*[id],*[name]')).concat(node);
+                    nodes.forEach(node => Array.from(node.attributes).forEach(address));
                     break;
                 case Node.ATTRIBUTE_NODE:
                     hook(node);
