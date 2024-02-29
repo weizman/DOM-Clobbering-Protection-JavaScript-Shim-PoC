@@ -55,7 +55,7 @@ window.FIGHT_DOM_CLOBBERING = (function(){
             if (!window[value]) {
                 return;
             }
-            if (window[value] instanceof HTMLElement) {
+            if (window[value] instanceof Element) {
                 return block(value);
             }
             if (window[value] instanceof HTMLCollection) {

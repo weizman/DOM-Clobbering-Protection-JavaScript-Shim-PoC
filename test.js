@@ -4,6 +4,7 @@ window.TEST_FIGHT_DOM_CLOBBERING = (function(){
             container.innerHTML = '<b>Tests</b> <i>(see in console)</i>';
             container.style.border = '1px solid';
             container.style.padding = '7px';
+            container.style.fontSize = '13px';
         }
 
         function before() {
@@ -157,6 +158,26 @@ window.TEST_FIGHT_DOM_CLOBBERING = (function(){
                 child2.setAttribute('name', test);
                 child.appendChild(child2);
                 div.appendChild(child);
+                await new Promise(r => setTimeout(r, 0));
+                try {window[test]} catch (err) {
+                    return [true, test];
+                }
+                return [false, test];
+            },
+
+            async function(div) {
+                const test = 'non html element (svg)';
+                div.innerHTML = `<svg id="${test}">`;
+                await new Promise(r => setTimeout(r, 0));
+                try {window[test]} catch (err) {
+                    return [true, test];
+                }
+                return [false, test];
+            },
+
+            async function(div) {
+                const test = 'non html element (math)';
+                div.innerHTML = `<math id="${test}">`;
                 await new Promise(r => setTimeout(r, 0));
                 try {window[test]} catch (err) {
                     return [true, test];
